@@ -4,10 +4,7 @@ from sys import stdout
 from typing import Union
 import random
 
-class GameFacade:
-    
-    @staticmethod
-    def printSlow(*args):
+def printSlow(*args):
         for string in args:
             for i in string.upper():
                 stdout.write(i)

@@ -4,13 +4,16 @@ from sys import stdout
 from typing import Union
 import random
 
-def printSlow(*args): # POLISH UP
-    for string in args:
-        for i in string.upper():
-            stdout.write(i)
-            stdout.flush()
-            time.sleep(0.01)
-        print("")
+class GameFacade:
+    
+    @staticmethod
+    def printSlow(*args):
+        for string in args:
+            for i in string.upper():
+                stdout.write(i)
+                stdout.flush()
+                time.sleep(0.01)
+            print("")
 
 class IBuilder(metaclass=ABCMeta):
     # BUILDER INTERFACE

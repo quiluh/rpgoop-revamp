@@ -38,8 +38,21 @@ class PlayerBuilder(IBuilder):
         self.product.Name = inputName
         return self
 
+    def buildHealth(self) -> 'PlayerBuilder':
+        self.product.Health = 100
+        self.product.MaxHealth = 100
+
     def getResult(self) -> 'Player':
         return self.product
+
+class Director:
+    # BUILD DIRECTOR
+
+    @staticmethod
+    def constructPlayer(name:str):
+        return PlayerBuilder()\
+            .buildName(name)\
+            .getResult()
     
 class ICappedValue():
     # VALUE CAP INTERFACE
@@ -122,11 +135,11 @@ class Player(Singleton):
         self._name = inputName
 
     @property
-    def CurrentHealth(self) -> float:
-        return self._health.CurrentValue
-    @CurrentHealth.setter
+    def Health(self) -> float:
+        return self._health.Value
+    @Health.setter
     def Health(self,inputHealth:float):
-        self._health.CurrentValue = inputHealth
+        self._health.Value = inputHealth
     
     @property
     def MaxHealth(self) -> float:
@@ -149,12 +162,3 @@ class Player(Singleton):
         self._inventory.addItem(item)
     def removeInventory(self,item:Item):
         self._inventory.removeItem(item)
-
-class Director:
-    # BUILD DIRECTOR
-
-    @staticmethod
-    def constructPlayer(name:str):
-        return PlayerBuilder()\
-            .buildName(name)\
-            .getResult()

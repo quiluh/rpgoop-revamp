@@ -39,8 +39,8 @@ class PlayerBuilder(IBuilder):
         return self
 
     def buildHealth(self) -> 'PlayerBuilder':
-        self.product.Health = 100
         self.product.MaxHealth = 100
+        self.product.Health = 100
 
     def getResult(self) -> 'Player':
         return self.product
@@ -52,6 +52,7 @@ class Director:
     def constructPlayer(name:str):
         return PlayerBuilder()\
             .buildName(name)\
+            .buildHealth()\
             .getResult()
     
 class ICappedValue():

@@ -41,6 +41,7 @@ class PlayerBuilder(IBuilder):
     def buildHealth(self) -> 'PlayerBuilder':
         self.product.MaxHealth = 100
         self.product.Health = 100
+        return self
 
     def getResult(self) -> 'Player':
         return self.product

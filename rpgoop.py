@@ -89,77 +89,74 @@ class Item:
     
 class Balance(Singleton):
     
-    def __init__(self,value:float=0):
-        self._value = value
+    _value = []
     
     @property
-    def Value(self) -> float:
-        return self._value
+    def Value(cls) -> float:
+        return cls._value
     @Value.setter
-    def Value(self,inputValue:float) -> bool:
+    def Value(cls,inputValue:float) -> bool:
         if inputValue >= 0:
-            self._value = inputValue
+            cls._value = inputValue
             return True
         else:
-            self._value = 0
+            cls._value = 0
             return False
 
 class Inventory(Singleton):
-    
-    def __init__(self,value:list=[]):
-        self._value = value
+
+    _value = []
     
     @property
-    def Value(self) -> float:
-        return self._value
-    def addItem(self,item:Item):
+    def Value(cls) -> float:
+        return cls._value
+    def addItem(cls,item:Item):
         # ITEM LOGIC
         pass
-    def removeItem(self,item:Item):
+    def removeItem(cls,item:Item):
         # ITEM LOGIC
         pass
 
 class Player(Singleton):
     # PLAYER SINGLETON
 
-    def __init__(self):
-        self._name = ""
-        self._health = ICappedValue(None,None)
-        self._balance = Balance()
-        self._inventory = Inventory()
-    
+    _name = ""
+    _health = ICappedValue(None,None)
+    _balance = Balance()
+    _inventory = Inventory()
+
     @property
-    def Name(self) -> str:
-        return self._name
+    def Name(cls) -> str:
+        return cls._name
     @Name.setter
-    def Name(self,inputName:str):
-        self._name = inputName
+    def Name(cls,inputName:str):
+        cls._name = inputName
 
     @property
-    def Health(self) -> float:
-        return self._health.Value
+    def Health(cls) -> float:
+        return cls._health.Value
     @Health.setter
-    def Health(self,inputHealth:float):
-        self._health.Value = inputHealth
+    def Health(cls,inputHealth:float):
+        cls._health.Value = inputHealth
     
     @property
-    def MaxHealth(self) -> float:
-        return self._health.MaxValue
+    def MaxHealth(cls) -> float:
+        return cls._health.MaxValue
     @MaxHealth.setter
-    def Health(self,inputHealth:float):
-        self._health.MaxValue = inputHealth
+    def Health(cls,inputHealth:float):
+        cls._health.MaxValue = inputHealth
 
     @property
-    def Balance(self) -> float:
-        return self._balance.Value
+    def Balance(cls) -> float:
+        return cls._balance.Value
     @Balance.setter
-    def Balance(self,inputBal:float):
-        self._balance.Value = inputBal
+    def Balance(cls,inputBal:float):
+        cls._balance.Value = inputBal
 
     @property
-    def Inventory(self) -> list:
-        return self._inventory.Value
-    def addInventory(self,item:Item):
-        self._inventory.addItem(item)
-    def removeInventory(self,item:Item):
-        self._inventory.removeItem(item)
+    def Inventory(cls) -> list:
+        return cls._inventory.Value
+    def addInventory(cls,item:Item):
+        cls._inventory.addItem(item)
+    def removeInventory(cls,item:Item):
+        cls._inventory.removeItem(item)

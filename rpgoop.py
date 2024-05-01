@@ -54,7 +54,7 @@ class Director:
             .buildName(name)\
             .buildHealth()\
             .getResult()
-    
+
 class ICappedValue():
     # VALUE CAP INTERFACE
 
@@ -83,9 +83,6 @@ class ICappedValue():
     @MinValue.setter
     def MinValue(self,inputValue:float):
         self._minValue = inputValue
-
-class Item:
-    pass
     
 class Balance(Singleton):
     
@@ -110,10 +107,12 @@ class Inventory(Singleton):
     @property
     def Value(cls) -> float:
         return cls._value
-    def addItem(cls,item:Item):
+    @classmethod
+    def addItem(cls,item):
         # ITEM LOGIC
         pass
-    def removeItem(cls,item:Item):
+    @classmethod
+    def removeItem(cls,item):
         # ITEM LOGIC
         pass
 
@@ -156,7 +155,9 @@ class Player(Singleton):
     @property
     def Inventory(cls) -> list:
         return cls._inventory.Value
-    def addInventory(cls,item:Item):
+    @classmethod
+    def addInventory(cls,item):
         cls._inventory.addItem(item)
-    def removeInventory(cls,item:Item):
+    @classmethod
+    def removeInventory(cls,item):
         cls._inventory.removeItem(item)

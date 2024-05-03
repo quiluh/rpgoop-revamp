@@ -20,6 +20,35 @@ class Singleton:
             cls._instance = super().__new__(cls,*args,**kwargs)
         return cls._instance
 
+class ICappedValue():
+    # VALUE CAP INTERFACE
+
+    def __init__(self,maxValue:float,minValue:float):
+        self._value = maxValue
+        self._maxValue = maxValue
+        self._minValue = minValue
+    
+    @property
+    def Value(self) -> float:
+        return self._value
+    @Value.setter
+    def Value(self,inputValue:float):
+        self._value = self._maxValue if inputValue > self._maxValue else self._minValue if inputValue < self._minValue else inputValue
+    
+    @property
+    def MaxValue(self) -> float:
+        return self._maxValue
+    @MaxValue.setter
+    def MaxValue(self,inputValue:float):
+        self._maxValue = inputValue
+
+    @property
+    def MinValue(self) -> float:
+        return self._minValue
+    @MinValue.setter
+    def MinValue(self,inputValue:float):
+        self._minValue = inputValue
+
 class IBuilder(metaclass=ABCMeta):
     # BUILDER INTERFACE
 
@@ -55,36 +84,60 @@ class Director:
             .buildName(name)\
             .buildHealth()\
             .getResult()
-
-class ICappedValue():
-    # VALUE CAP INTERFACE
-
-    def __init__(self,maxValue:float,minValue:float):
-        self._value = maxValue
-        self._maxValue = maxValue
-        self._minValue = minValue
     
-    @property
-    def Value(self) -> float:
-        return self._value
-    @Value.setter
-    def Value(self,inputValue:float):
-        self._value = self._maxValue if inputValue > self._maxValue else self._minValue if inputValue < self._minValue else inputValue
-    
-    @property
-    def MaxValue(self) -> float:
-        return self._maxValue
-    @MaxValue.setter
-    def MaxValue(self,inputValue:float):
-        self._maxValue = inputValue
+class Flyweight:
+    # FLYWEIGHT CONTAINS UNIQUE ID
+
+    def __init__(self,code:int):
+        self._code = code
 
     @property
-    def MinValue(self) -> float:
-        return self._minValue
-    @MinValue.setter
-    def MinValue(self,inputValue:float):
-        self._minValue = inputValue
+    def Code(self) -> int:
+        return self._code        
+
+class Item(Flyweight):
+    pass
+
+class Wearable(Item):
+    pass
+
+class Weapon(Wearable):
+    pass
+
+class Clothing(Wearable):
+    pass
+
+class Collectable(Item):
+    pass
+
+class Consumable(Item):
+    pass
+
+class ItemFactory:
+    # ITEM FACTORY
+
+    availableIDs = [i for i in range(1000)]
+    templateObject = {"Name":"","Price":0,"Type":Item,"id":availableIDs.pop(random.randint(0,len(availableIDs)))}
+
+    allObjects = [
+
+    ]
+
+    @staticmethod
+    def createObject(object:Union[Item,dict]):
+        if type(object) == dict:
+            object = object["Type"](object)
+        return object
     
+class FlyweightFactory(Singleton):
+    # FLYWEIGHT FACTORY
+
+    _flyweights : dict[int,Flyweight] = {i["id"]:ItemFactory.createObject(i) for i in ItemFactory.allObjects}
+
+    def getFlyweight(cls,code:int) -> Flyweight:
+        if code in cls._flyweights:
+            return cls._flyweights[code]
+
 class Balance(Singleton):
     
     _value = []

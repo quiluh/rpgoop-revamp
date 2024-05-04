@@ -23,8 +23,8 @@ class Singleton:
 class ICappedValue():
     # VALUE CAP INTERFACE
 
-    def __init__(self,maxValue:float,minValue:float):
-        self._value = maxValue
+    def __init__(self,value:float,maxValue:float,minValue:float):
+        self._value = value
         self._maxValue = maxValue
         self._minValue = minValue
     
@@ -83,22 +83,62 @@ class Director:
         return PlayerBuilder()\
             .buildName(name)\
             .buildHealth()\
-            .getResult()
-    
-class Flyweight:
-    # FLYWEIGHT CONTAINS UNIQUE ID
+            .getResult()    
 
+class Flyweight:
+    
     def __init__(self,code:int):
         self._code = code
 
     @property
     def Code(self) -> int:
-        return self._code        
+        return self._code
 
-class Item(Flyweight):
-    pass
+class FlyweightFactory(Singleton):
+    # FLYWEIGHT FACTORY
 
-class Wearable(Item):
+    _flyweights : dict[int,'IItem'] = {}
+
+    @classmethod
+    def getFlyweight(cls,flyweight:dict) -> Union[None,Flyweight]:
+        if flyweight["id"] in cls._flyweights:
+            return cls._flyweights[flyweight["id"]]
+        return None
+    
+    @classmethod
+    def addFlyweight(cls,flyweight:Flyweight):
+        cls._flyweights[flyweight.Code] = flyweight
+
+class IItem(Flyweight):
+    # IItem INTERFACE
+
+    _latestId = -1
+
+    def __init__(self,item:dict):
+        self._latestId += 1
+        super().__init__(self._latestId)
+
+        self._quantity = ICappedValue(0,float("inf"),0)
+
+        self._name = item["Name"]
+        self._price = item["Price"]
+
+    @property
+    def Quantity(self) -> int:
+        return self._quantity
+    @Quantity.setter
+    def Quantity(self,value:int):
+        self._quantity = value
+
+    @property
+    def Name(self) -> str:
+        return self._name
+    
+    @property
+    def Price(self) -> int:
+        return self._price    
+
+class Wearable(IItem):
     pass
 
 class Weapon(Wearable):
@@ -107,36 +147,26 @@ class Weapon(Wearable):
 class Clothing(Wearable):
     pass
 
-class Collectable(Item):
+class Collectable(IItem):
     pass
 
-class Consumable(Item):
+class Consumable(IItem):
     pass
 
-class ItemFactory:
-    # ITEM FACTORY
+class ItemCreator:
+    # Item FACTORY
 
-    availableIDs = [i for i in range(1000)]
-    templateObject = {"Name":"","Price":0,"Type":Item,"id":availableIDs.pop(random.randint(0,len(availableIDs)))}
-
-    allObjects = [
-
-    ]
+    _ItemTemplate = {"Name":"","Price":0,"id":0,"Type":IItem}
 
     @staticmethod
-    def createObject(object:Union[Item,dict]):
-        if type(object) == dict:
-            object = object["Type"](object)
-        return object
-    
-class FlyweightFactory(Singleton):
-    # FLYWEIGHT FACTORY
-
-    _flyweights : dict[int,Flyweight] = {i["id"]:ItemFactory.createObject(i) for i in ItemFactory.allObjects}
-
-    def getFlyweight(cls,code:int) -> Flyweight:
-        if code in cls._flyweights:
-            return cls._flyweights[code]
+    def createItem(item:dict) -> IItem:
+        requestedFlyweight = FlyweightFactory.getFlyweight(item)
+        if requestedFlyweight:
+            return requestedFlyweight
+        else:
+            result = IItem["Type"](item)
+            FlyweightFactory.addFlyweight(result)
+            return result
 
 class Balance(Singleton):
     
@@ -174,7 +204,7 @@ class Player(Singleton):
     # PLAYER SINGLETON
 
     _name = ""
-    _health = ICappedValue(None,None)
+    _health = ICappedValue(None,None,None)
     _balance = Balance()
     _inventory = Inventory()
 
@@ -211,7 +241,7 @@ class Player(Singleton):
         return cls._inventory.Value
     @classmethod
     def addInventory(cls,item):
-        cls._inventory.addItem(item)
+        cls._inventory.additem(item)
     @classmethod
     def removeInventory(cls,item):
-        cls._inventory.removeItem(item)
+        cls._inventory.removeitem(item)

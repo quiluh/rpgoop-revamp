@@ -112,11 +112,8 @@ class FlyweightFactory(Singleton):
 class IItem(Flyweight):
     # IItem INTERFACE
 
-    _latestId = -1
-
     def __init__(self,item:dict):
-        self._latestId += 1
-        super().__init__(self._latestId)
+        super().__init__(item["id"])
 
         self._quantity = ICappedValue(0,float("inf"),0)
 

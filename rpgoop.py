@@ -49,6 +49,36 @@ class ICappedValue():
     def MinValue(self,inputValue:float):
         self._minValue = inputValue
 
+class IIterator(metaclass=ABCMeta):
+    # ITERATOR INTERFACE
+
+    @staticmethod
+    @abstractmethod
+    def hasNext() -> bool:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def next():
+        pass
+
+class Iterable(IIterator):
+    # CONCRETE INERATOR
+
+    def __init__(self,aggregrates) -> None:
+        self._index = 0
+        self._aggregrates = aggregrates
+    
+    def next(self):
+        if self._index < len(self._aggregrates):
+            aggregate = self._aggregrates[self._index]
+            self._index += 1
+            return aggregate
+        raise Exception("AtEndOfIteratorException","At End of Iterator")
+    
+    def hasNext(self) -> bool:
+        return self._index < len(self._aggregrates)
+
 class IBuilder(metaclass=ABCMeta):
     # BUILDER INTERFACE
 
@@ -97,7 +127,7 @@ class Flyweight:
 class FlyweightFactory(Singleton):
     # FLYWEIGHT FACTORY
 
-    _flyweights : dict[int,'IItem'] = {}
+    _flyweights : dict[int,'Item'] = {}
 
     @classmethod
     def getFlyweight(cls,flyweight:dict) -> Union[None,Flyweight]:
@@ -109,8 +139,8 @@ class FlyweightFactory(Singleton):
     def addFlyweight(cls,flyweight:Flyweight):
         cls._flyweights[flyweight.Code] = flyweight
 
-class IItem(Flyweight):
-    # IItem INTERFACE
+class Item(Flyweight):
+    # Item INTERFACE
 
     def __init__(self,item:dict):
         super().__init__(item["id"])
@@ -135,7 +165,7 @@ class IItem(Flyweight):
     def Price(self) -> int:
         return self._price    
 
-class Wearable(IItem):
+class Wearable(Item):
     pass
 
 class Weapon(Wearable):
@@ -144,24 +174,26 @@ class Weapon(Wearable):
 class Clothing(Wearable):
     pass
 
-class Collectable(IItem):
+class Collectable(Item):
     pass
 
-class Consumable(IItem):
+class Consumable(Item):
     pass
 
 class ItemCreator:
     # Item FACTORY
+    
+    _ids = Iterable([i for i in range(1000)])
 
-    _ItemTemplate = {"Name":"","Price":0,"id":0,"Type":IItem}
+    itemTemplate = {"Name":"","Price":0,"id":_ids.next(),"Type":Item}
 
     @staticmethod
-    def createItem(item:dict) -> IItem:
+    def createItem(item:dict) -> Item:
         requestedFlyweight = FlyweightFactory.getFlyweight(item)
         if requestedFlyweight:
             return requestedFlyweight
         else:
-            result = IItem["Type"](item)
+            result = Item["Type"](item)
             FlyweightFactory.addFlyweight(result)
             return result
 

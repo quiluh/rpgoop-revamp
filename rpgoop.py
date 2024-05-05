@@ -142,6 +142,11 @@ class FlyweightFactory(Singleton):
 class Item(Flyweight):
     # Item INTERFACE
 
+    def __eq__(self,other):
+        if isinstance(other, self):
+            return (self._name,self._price) == (other.Name,other.Price)
+        return False
+
     def __init__(self,item:dict):
         super().__init__(item["id"])
 
@@ -220,14 +225,27 @@ class Inventory(Singleton):
     @property
     def Value(cls) -> float:
         return cls._value
+    
     @classmethod
-    def addItem(cls,item):
-        # ITEM LOGIC
-        pass
+    def addItem(cls, item: Item) -> bool:
+        # Check if the item is already in the list
+        existing_item = next((i for i in cls._value if i == item), None)
+        if existing_item:
+            existing_item.Quantity += 1
+            return True
+        else:
+            cls._value.append(item)
+            return False
+
     @classmethod
-    def removeItem(cls,item):
-        # ITEM LOGIC
-        pass
+    def removeItem(cls, item: Item) -> bool:
+        existing_item = next((i for i in cls._value if i == item), None)
+        if existing_item:
+            if existing_item.Quantity > 0:
+                existing_item.Quantity -= 1
+            return True
+        return False
+
 
 class Player(Singleton):
     # PLAYER SINGLETON

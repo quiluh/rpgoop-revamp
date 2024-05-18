@@ -101,6 +101,11 @@ class PlayerBuilder(IBuilder):
         self.product.MaxHealth = 100
         self.product.Health = 100
         return self
+    
+    def buildStrength(self) -> 'PlayerBuilder':
+        self.product.Strength = random.randint(1,3)
+        self.product.Strength.MaxValue = float("inf")
+        self.product.Strength.MinValue = 0
 
     def getResult(self) -> 'Player':
         return self.product
@@ -113,6 +118,7 @@ class Director:
         return PlayerBuilder()\
             .buildName(name)\
             .buildHealth()\
+            .buildStrength()\
             .getResult()    
 
 class Flyweight:
@@ -257,6 +263,7 @@ class Player(Singleton):
     _health = ICappedValue(None,None,None)
     _balance = Balance()
     _inventory = Inventory()
+    _strength = ICappedValue(None,None,None)
 
     @property
     def Name(cls) -> str:
@@ -278,6 +285,13 @@ class Player(Singleton):
     @MaxHealth.setter
     def Health(cls,inputHealth:float):
         cls._health.MaxValue = inputHealth
+
+    @property
+    def Strength(cls) -> float:
+        return cls._strength.Value
+    @Strength.setter
+    def Strength(cls,inputStrength:float):
+        cls._strength.Value = inputStrength
 
     @property
     def Balance(cls) -> float:

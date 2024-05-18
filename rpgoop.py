@@ -234,6 +234,7 @@ class Inventory(Singleton):
             existing_item.Quantity += 1
             return True
         else:
+            item.Quantity = 1
             cls._value.append(item)
             return False
 
@@ -243,6 +244,8 @@ class Inventory(Singleton):
         if existing_item:
             if existing_item.Quantity > 0:
                 existing_item.Quantity -= 1
+            else:
+                cls._value.remove(item)
             return True
         return False
 

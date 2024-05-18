@@ -150,7 +150,7 @@ class Item(Flyweight):
 
     def __eq__(self,other):
         if isinstance(other, self):
-            return (self._name,self._price) == (other.Name,other.Price)
+            return (self._name,self.Code) == (other.Name,other.Code)
         return False
 
     def __init__(self,item:dict):
@@ -210,7 +210,7 @@ class ItemCreator:
 
 class Balance(Singleton):
     
-    _value = []
+    _value = 0.0
     
     @property
     def Value(cls) -> float:

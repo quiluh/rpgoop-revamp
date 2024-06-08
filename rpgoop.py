@@ -150,7 +150,7 @@ class Item(Flyweight):
 
     def __eq__(self,other):
         if isinstance(other, self):
-            return (self._name,self.Code) == (other.Name,other.Code)
+            return self.Code == other.Code
         return False
 
     def __init__(self,item:dict):

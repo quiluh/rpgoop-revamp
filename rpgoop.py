@@ -204,7 +204,7 @@ class ItemCreator:
         if requestedFlyweight:
             return requestedFlyweight
         else:
-            result = Item["Type"](item)
+            result = Item["Type"](item)                 # what the heck does Item["Type"] return
             FlyweightFactory.addFlyweight(result)
             return result
 

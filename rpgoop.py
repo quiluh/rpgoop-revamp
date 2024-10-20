@@ -251,6 +251,7 @@ class Inventory(Singleton):
             if existing_item.Quantity - 1 > 0:
                 existing_item.Quantity -= 1
             else:
+                existing_item.Quantity = 0
                 cls._value.remove(item)
             return True
         return False

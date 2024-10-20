@@ -248,7 +248,7 @@ class Inventory(Singleton):
     def removeItem(cls, item: Item) -> bool:
         existing_item = next((i for i in cls._value if i == item), None)
         if existing_item:
-            if existing_item.Quantity > 0:
+            if existing_item.Quantity - 1 > 0:
                 existing_item.Quantity -= 1
             else:
                 cls._value.remove(item)
